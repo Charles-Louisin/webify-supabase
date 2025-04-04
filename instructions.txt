@@ -1,0 +1,142 @@
+## Introduction
+PRESENTATION DE MON PROJET:
+C'est un projet NextJs (frontend) + Supabase (backend) + Tailwind et JavaScript.
+Les methodes et templates et sites et libraries à utiliser sont precisé en bas.
+Mon app aura 3 compartiments ou roles: les users (user), les collaborateurs (colab) et l'administrateur (admin).
+NB: Il n'est pas nécessaire de se connecter pour voir les pages de Home, About, Projects, Skills, Blog, Contact. Tout le monde a acces à ces pages
+A quoi sert donc le login ?, il est impossible de csoummetre le formulaire de contact (dans la page de contact ou ailleurs) sans etre connecté lorsque l'utilisateur se connecte, il accede à plusieurs privilege:
+en tant que "user": il a acces à sa page de profile où il peut modifier sa photo, son nom et autre information, voir les postes qu'il a enregistré, liké ou partagé et ses stats (par rapport aux commentaires, likes, partage qu'il a pu effectuer dans l'application et c'est là où il pourra aussi supprimer son compte).
+il aura aussi acces à la page de messagerie, où il pourra discuter avec les diffrents collaborateurs visibles sur la plateform, les autres utilisateurs, creer ou rejoindre des groupes de discussions, demander et recevoir des demandes d'amitie(lorsqu'ils sont amis, les 2 utilisateurs peuvent voir leur contact affiche de maniere permanante dans une page pour lancer rapidement la discussion).
+en tant que "colab": il a les memes acces que les "user" normaux mais il a la permission de faire des postes qui seront vu dans la page d'accueil et les modifiers(uniquement si ce sont les siens) ou les supprimer(uniquement si ce sont les siens), poster des projects réalisés dans la page projects et pouvoir les modifiers ou supprimer(uniquement si ce sont les siens) et voir dans sa page de profil des stats aussi par rapport aux postes aimés, partagé et comenté pour voir comment evolue sa notoriété et avoir des astuces pour faires des meilleures postes et à quelle fréquence. le collaborateur se voit afficher avec son nom, un badge de certification, qui ne sera autre que le logo de l'application, qui attestera qu'il est bien membre collaborateur de l'application.
+en tant que "admin": il a les memes privileges que le "user" et le "colab" et en plus il a une page de dashboard où il voit tout ce qui se passe dans l'application, les stats concernants toutes les interactions des utilisateurs(user comme colab) lui sont affiché par utilisateur, puis de facon global il a toutes les stats necessaires pour voir la tendance de son application (combien de personnes visite le site et combien de fois par, semaine, mois ou annee. la moyenne des likes sur un post, de commentaires, voir quel est le postes ou projet le plus apprecié durant la journée, la semaine, le mois ou l'année et autres stats importantes pour le suivies de l'application), les stats concernant le "user" le plus actif, le colab le plus perfomants en raison de la forte affluence des utilisateurs sur ses postes, tec... dans son dashboard il peut aussi manager les utilisateurs comme les collaborateurs(supprimer leurs comptes, modifier leurs roles et permissions) et voir les performances par utilisateurs(user comme collab), par user uniquement, par collab uniquement ou pur chaque utilisateur en particuliers.
+l'administrateur peut faire des postes et des modifications sur toutes les pages de l'application sans distinctions, que ce soit ses postes ou pas. il a aussi un badge à coté de son nom mais ce sera ecrit "admin".
+
+
+L'objectif est de créer une plateforme où les utilisateurs peuvent interagir, partager des projets et des blogs, avec une gestion avancée des rôles (user, collaborateur et administrateur). 
+
+L'application doit adopter un **design futuriste et professionnel**, sans couleurs trop vives ni tape-à-l'œil. La couleur phare est **le bleu**, décliné en différentes nuances pour un rendu élégant et harmonieux.
+
+Des **animations immersives et interactives** avec **Three.js, Framer Motion et GSAP** doivent enrichir l'expérience utilisateur. Par exemple :
+- Des animations interactives où des **éléments flottent légèrement en réponse au curseur**.
+- Des **transitions fluides** entre les pages pour une navigation intuitive.
+
+---
+
+## 📌 Pages et leur design
+
+1. Page d'accueil (Home)
+But : Faire une bonne première impression.
+Contenu :
+Un titre accrocheur (ex. : "Salut, moi c'est Charles, développeur web full stack passionné"). et une photo de moi,Une image ou animation (par exemple un avatar, une photo pro, ou une animation sur ma photo avec Three.js), que je pourrai chagner à souhait en tant qu'admin.
+Un court résumé de ton expertise et de ton objectif professionnel.
+Un bouton CTA (Call to Action) menant vers la section "Projets"..
+une section pour afficher les cartes de mes diffrents collaborateurs, avec la Possibilité de laisser un like sur celui ci et un message(le message renvoi à la page de messagerie qui n'est accessible qu'une fois inscrit).
+si inscrit il sera renvoye vers la page de messages ou le like sera mis mais s'il n'est pas inscrit un toast error disant "vous devez vous connecter pour liker un collaborateur".
+une section pour les avis des utilisateurs(il faut etre connecte pour laisser un avis), il peut laisser un avis sur un colab en particulier ou sur l'admin(avis qui s'affichera sur la page d'accueil mais aussi dans le profil des deux utilisateurs) ou laisser un avis sur l'application en generale.
+un footer
+
+---
+
+### 2. **À propos (About)**
+**But** : Présenter le créateur et les collaborateurs.
+**Design** : 
+- Présentation avec **un effet de texte typé**.
+- **Animation Three.js** : Une **orbite d’icônes de technologies** (React, Next.js, Supabase, etc.) tournant autour d’une sphère bleutée.
+- Section des collaborateurs : **Affichage dynamique** avec possibilité de modifier son propre contenu (pour les colab et l’admin).
+- **Lien vers le CV** avec **effet de survol 3D**.
+
+---
+
+### 3. **Projets (Projects)**
+**But** : Mettre en avant les réalisations.
+**Design** :
+- **Grille fluide** affichant les projets avec effet **parallax au scroll**.
+- **Mini robot Android** qui **vient déposer un projet aléatoire** dans la vue.
+- Filtres interactifs avec **animations de transition douce**.
+- Options pour **ajouter, modifier et supprimer** un projet (colab et admin uniquement).
+- **Effet de zoom** sur les images des projets.
+
+---
+
+### 4. **Compétences (Skills)**
+**But** : Mettre en avant les compétences techniques et soft skills.
+**Design** :
+- **Graphiques interactifs** pour visualiser le niveau des compétences.
+- **Icônes flottantes** représentant les technologies maîtrisées.
+- Possibilité pour chaque colab et admin de **modifier ses propres compétences**.
+- **Effet d’onde lumineuse** au passage du curseur.
+
+---
+
+### 5. **Blog**
+**But** : Partager des articles techniques.
+**Design** :
+- **Mise en page épurée** avec **mode sombre intégré**.
+- **Effet de transition entre les articles**.
+- **Mini robot Android** qui **fait défiler un article en le poussant**.
+- Les users peuvent **liker, commenter, enregistrer et partager**.
+- Les colab et admin peuvent **ajouter et modifier leurs blogs**.
+
+---
+
+### 6. **Contact**
+**But** : Faciliter la prise de contact.
+**Design** :
+- **Formulaire de contact minimaliste** avec validation en temps réel.
+- **Arrière-plan en néon bleu doux**.
+- Si l’utilisateur est connecté, possibilité de **choisir un collaborateur à contacter**.
+- **Animation Three.js** : Un **effet de vague fluide** sous le formulaire.
+
+---
+
+### 7. **Authentification**
+**But** : Gérer l'accès utilisateur.
+**Design** :
+- **Écran de connexion/register épuré** avec **effet de flou en arrière-plan**.
+- **Animation du mini robot** qui **tape un mot de passe sur un clavier holographique**.
+- Connexion par **email, Google** et réinitialisation via **code à 6 chiffres**.
+
+---
+
+### 8. **Profil**
+**But** : Permettre aux utilisateurs de gérer leur compte.
+**Design** :
+- **Interface personnalisable** avec **bannière et avatar animés**.
+- **Statistiques interactives** sur l’activité de l’utilisateur.
+- **Possibilité de modifier ses informations**.
+- **Effet 3D sur les boutons de modification**.
+
+---
+
+### 9. **Messagerie**
+**But** : Offrir un espace de discussion.
+**Design** :
+- **Interface fluide** avec **bulles de conversation animées**.
+- **Effet de machine à écrire** pour l'affichage des messages.
+- Possibilité de **créer des groupes, envoyer des demandes d’amitié**.
+- **Animation du mini robot Android** qui **vient livrer les nouveaux messages**.
+
+---
+
+### 10. **Dashboard Admin**
+**But** : Fournir une vue complète sur l'application.
+**Design** :
+- **Graphiques interactifs** sur toutes les statistiques imaginables.
+- **Filtres avancés** pour voir les tendances par période.
+- **Tableau de gestion des utilisateurs et collaborateurs**.
+- **Mini robot Android** qui **vient afficher un rapport en hologramme**.
+- **Mode sombre et clair dynamique**.
+
+---
+
+## 🎨 Technologies et UX
+- **Framer Motion + GSAP** pour des transitions fluides.
+- **Three.js** pour les animations interactives (orbites, particules, effets de lumière).
+- **Next.js 15** pour une structure optimisée et un **chargement rapide**.
+- **Supabase** pour la **gestion des utilisateurs, des fichiers et des données en temps réel**.
+- **Tailwind CSS 4** pour un **style moderne et responsive**.
+- **Effets de néon bleuté et glassmorphism** pour un rendu futuriste mais sobre.
+
+---
+
+Ce prompt offre à Cursor AI une vision claire et détaillée de la structure et du design de WEBIFY. Chaque page est optimisée avec des **animations immersives**, une **navigation fluide**, et une **esthétique moderne** centrée sur le bleu. L'expérience utilisateur est pensée pour être **intuitive, interactive et engageante**.
