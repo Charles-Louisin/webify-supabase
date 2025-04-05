@@ -31,6 +31,9 @@ module.exports = {
           '50%': { transform: 'translateY(-20px)' },
         },
       },
+      fontFamily: {
+        orbitron: ['var(--font-orbitron)'],
+      },
     },
   },
   plugins: [],

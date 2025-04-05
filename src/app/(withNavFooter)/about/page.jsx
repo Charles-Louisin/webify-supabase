@@ -125,7 +125,7 @@ export default function About() {
   return (
     <MainLayout>
       {/* Section Introduction */}
-      <section className="container mx-auto px-4 mb-20">
+      <section className="container mx-auto px-4 pt-16 mb-20">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="w-full md:w-1/2">
             <motion.h1 

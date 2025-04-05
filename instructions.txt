@@ -114,7 +114,7 @@ un footer
 - **Interface fluide** avec **bulles de conversation animées**.
 - **Effet de machine à écrire** pour l'affichage des messages.
 - Possibilité de **créer des groupes, envoyer des demandes d’amitié**.
-- **Animation du mini robot Android** qui **vient livrer les nouveaux messages**.
+- **Animation impressionnante avec three.js à la livraison des nouveaux messages**.
 
 ---
 
@@ -124,7 +124,6 @@ un footer
 - **Graphiques interactifs** sur toutes les statistiques imaginables.
 - **Filtres avancés** pour voir les tendances par période.
 - **Tableau de gestion des utilisateurs et collaborateurs**.
-- **Mini robot Android** qui **vient afficher un rapport en hologramme**.
 - **Mode sombre et clair dynamique**.
 
 ---

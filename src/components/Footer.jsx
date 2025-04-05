@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 // Icônes sociales
@@ -12,7 +13,7 @@ const SocialIcon = ({ href, children, label }) => (
     aria-label={label}
     whileHover={{ scale: 1.1, y: -3 }}
     whileTap={{ scale: 0.97 }}
-    className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+    className="p-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
   >
     {children}
   </motion.a>
@@ -20,15 +21,25 @@ const SocialIcon = ({ href, children, label }) => (
 
 export function Footer() {
   return (
-    <footer className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm pt-12 pb-8 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-gray-100 dark:bg-gray-900 pt-12 pb-8 border-t border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo et tagline */}
           <div className="col-span-1 md:col-span-1">
-            <Link href="/">
-              <h3 className="text-xl font-bold text-primary-600 dark:text-primary-400 mb-3">WEBIFY</h3>
+            <Link href="/" className="flex items-center">
+              <Image 
+                src="/images/webifyLogo1.png" 
+                alt="Webify Logo" 
+                width={40} 
+                height={40} 
+                className="mr-2"
+                onError={(e) => {
+                  e.target.src = "https://via.placeholder.com/40";
+                }}
+              />
+              <h3 className="text-xl font-bold text-primary-600 dark:text-primary-400">WEBIFY</h3>
             </Link>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 mb-4">
               Votre vision, notre création
             </p>
             <div className="flex space-x-2">
@@ -52,7 +63,7 @@ export function Footer() {
           
           {/* Liens rapides */}
           <div className="col-span-1">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 mb-4">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white mb-4">
               Navigation
             </h4>
             <ul className="space-y-2">
@@ -60,7 +71,7 @@ export function Footer() {
                 <li key={item}>
                   <Link 
                     href={`/${item === 'Accueil' ? '' : item.toLowerCase().replace('à ', '')}`}
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     {item}
                   </Link>
@@ -71,10 +82,10 @@ export function Footer() {
           
           {/* Contact */}
           <div className="col-span-1">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 mb-4">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white mb-4">
               Contact
             </h4>
-            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
               <li>
                 <Link 
                   href="/contact"
@@ -91,12 +102,15 @@ export function Footer() {
                   contact@example.com
                 </a>
               </li>
+              <li className="text-gray-600 dark:text-gray-300">
+                +33 (0)1 23 45 67 89
+              </li>
             </ul>
           </div>
           
           {/* Légal */}
           <div className="col-span-1">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-gray-100 mb-4">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white mb-4">
               Légal
             </h4>
             <ul className="space-y-2">
@@ -104,7 +118,7 @@ export function Footer() {
                 <li key={item}>
                   <Link 
                     href={`/${item.toLowerCase().replace(' ', '-')}`}
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
                     {item}
                   </Link>
@@ -116,7 +130,7 @@ export function Footer() {
         
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
-          <p className="text-center text-xs text-gray-500 dark:text-gray-500">
+          <p className="text-center text-xs text-gray-600 dark:text-gray-400">
             © {new Date().getFullYear()} WEBIFY. Tous droits réservés.
           </p>
         </div>

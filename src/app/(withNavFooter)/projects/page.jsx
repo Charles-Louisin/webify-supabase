@@ -188,7 +188,7 @@ export default function Projects() {
   return (
     <MainLayout>
       {/* En-tête de page */}
-      <section className="container mx-auto px-4 mb-16">
+      <section className="container mx-auto px-4 pt-16 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -232,22 +232,6 @@ export default function Projects() {
         {/* Grille de projets */}
         <div className="relative">
           {/* Robot qui dépose un projet */}
-          <AnimatePresence>
-            {showRobot && randomProjectIndex !== null && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute top-10 left-1/2 transform -translate-x-1/2 z-50"
-              >
-                <AndroidRobot
-                  action="deliver"
-                  size={200}
-                  onComplete={() => setShowRobot(false)}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence mode="wait">

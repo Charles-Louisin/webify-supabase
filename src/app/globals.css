@@ -3,29 +3,45 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 51, 51, 51;
+  --background-rgb: 255, 255, 255;
+  --primary-rgb: 12, 74, 110;
+  --accent-rgb: 14, 165, 233;
+  --navbar-height: 64px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+  --foreground-rgb: 229, 231, 235;
+  --background-rgb: 15, 23, 42;
+  --primary-rgb: 56, 189, 248;
+  --accent-rgb: 6, 152, 225;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(var(--background-rgb));
+  min-height: 100vh;
 }
 
+/* Styles spécifiques pour les textes avec ombre */
+.shadow-text {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, #0ea5e9, #ec4899);
+}
+
+/* Styles pour les composants glassmorphism */
 .glassmorphism {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -35,4 +51,63 @@ body {
 .dark .glassmorphism {
   background: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Styles spécifiques pour la police Orbitron */
+.font-orbitron {
+  font-family: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+h1.font-orbitron, 
+h2.font-orbitron, 
+h3.font-orbitron {
+  letter-spacing: 0.075em;
+}
+
+/* Fix pour les sliders en mobile */
+@media (max-width: 640px) {
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Styles spécifiques pour le contenu principal */
+main {
+  padding-top: var(--navbar-height);
+}
+
+/* Amélioration des contrastes pour l'accessibilité */
+.text-light {
+  @apply text-gray-800 dark:text-gray-100;
+}
+
+.text-primary-accent {
+  @apply text-primary-600 dark:text-primary-400;
+}
+
+.text-secondary-accent {
+  @apply text-pink-600 dark:text-pink-400;
+}
+
+/* Améliorations des éléments d'interface */
+.btn-primary {
+  @apply bg-primary-600 hover:bg-primary-700 text-white dark:bg-primary-500 dark:hover:bg-primary-400 dark:text-gray-900 transition-colors;
+}
+
+.card {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700;
+}
+
+.input {
+  @apply bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400;
+}
+
+/* Dégradé de couleur pour le fond */
+.bg-gradient-page {
+  background: linear-gradient(180deg, #0c4a6e 0%, #0f172a 100%);
+}
+
+.dark .bg-gradient-page {
+  background: linear-gradient(180deg, #0c4a6e 0%, #0f172a 100%);
 }

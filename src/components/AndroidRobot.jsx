@@ -7,9 +7,46 @@ import gsap from 'gsap';
 import { Suspense } from 'react';
 
 // Composant 3D du robot Android
-function Model({ action = 'greet', onComplete, ...props }) {
+function Model({ action = 'greet', onComplete, onTapPhoto = () => {}, ...props }) {
   const group = useRef();
   const [animationState, setAnimationState] = useState('entering');
+  const [isTapping, setIsTapping] = useState(false);
+  
+  // Définir un intervalle pour taper sur la photo occasionnellement
+  useEffect(() => {
+    const tapInterval = setInterval(() => {
+      if (Math.random() > 0.7 && !isTapping) { // 30% de chance de taper
+        tapPhoto();
+      }
+    }, 5000); // Vérifier toutes les 5 secondes
+    
+    return () => clearInterval(tapInterval);
+  }, [isTapping]);
+  
+  // Fonction pour taper sur la photo
+  const tapPhoto = () => {
+    if (isTapping) return;
+    
+    setIsTapping(true);
+    
+    // Animation du bras qui tape
+    gsap.to(group.current.rotation, {
+      z: -0.3,
+      duration: 0.3,
+      ease: 'power2.out',
+      onComplete: () => {
+        gsap.to(group.current.rotation, {
+          z: 0,
+          duration: 0.3,
+          ease: 'power2.in',
+          onComplete: () => {
+            onTapPhoto(); // Déclenche l'animation de la photo
+            setIsTapping(false);
+          }
+        });
+      }
+    });
+  };
 
   useEffect(() => {
     if (animationState === 'entering') {
@@ -35,7 +72,7 @@ function Model({ action = 'greet', onComplete, ...props }) {
           duration: 1,
           ease: 'power2.inOut',
           onComplete: () => {
-            setTimeout(() => setAnimationState('exiting'), 1000);
+            setTimeout(() => setAnimationState('idle'), 1000);
           },
         });
       } else if (action === 'deliver') {
@@ -47,7 +84,7 @@ function Model({ action = 'greet', onComplete, ...props }) {
           repeat: 1,
           ease: 'power2.inOut',
           onComplete: () => {
-            setTimeout(() => setAnimationState('exiting'), 1000);
+            setTimeout(() => setAnimationState('idle'), 1000);
           },
         });
       }
@@ -66,13 +103,14 @@ function Model({ action = 'greet', onComplete, ...props }) {
 
   // Animation continue
   useFrame(() => {
-    if (animationState === 'action') {
+    if (animationState === 'action' || animationState === 'idle') {
+      // Légère rotation continue pour donner de la vie
       group.current.rotation.y += 0.01;
     }
   });
 
   return (
-    <group ref={group} {...props} dispose={null} scale={0.5}>
+    <group ref={group} {...props} dispose={null} scale={0.7}>
       {/* Robot stylisé avec des formes géométriques */}
       <mesh>
         <sphereGeometry args={[1, 32, 32]} />
@@ -86,11 +124,27 @@ function Model({ action = 'greet', onComplete, ...props }) {
         <cylinderGeometry args={[0.5, 0.8, 1, 32]} />
         <meshStandardMaterial color="#34A853" metalness={0.8} roughness={0.2} />
       </mesh>
+      
+      {/* Bras droit - celui qui peut taper la photo */}
+      <mesh position={[0.3, 0, 0]} rotation={[0, 0, -Math.PI / 4]}>
+        <capsuleGeometry args={[0.1, 0.6, 8, 16]} />
+        <meshStandardMaterial color="#FBBC05" metalness={0.6} roughness={0.3} />
+      </mesh>
+      <mesh position={[0.7, -0.2, 0]} rotation={[0, 0, -Math.PI / 4]}>
+        <boxGeometry args={[0.15, 0.15, 0.15]} />
+        <meshStandardMaterial color="#4285F4" metalness={0.6} roughness={0.3} />
+      </mesh>
+      
+      {/* Bras gauche */}
+      <mesh position={[-0.3, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
+        <capsuleGeometry args={[0.1, 0.6, 8, 16]} />
+        <meshStandardMaterial color="#FBBC05" metalness={0.6} roughness={0.3} />
+      </mesh>
     </group>
   );
 }
 
-export function AndroidRobot({ action = 'greet', onComplete, size = 120 }) {
+export function AndroidRobot({ action = 'greet', onComplete, onTapPhoto = () => {}, size = 160 }) {
   return (
     <div style={{ width: size, height: size }}>
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }}>
@@ -98,7 +152,7 @@ export function AndroidRobot({ action = 'greet', onComplete, size = 120 }) {
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
         <Suspense fallback={null}>
           <Float rotationIntensity={0.2}>
-            <Model action={action} onComplete={onComplete} />
+            <Model action={action} onComplete={onComplete} onTapPhoto={onTapPhoto} />
           </Float>
         </Suspense>
       </Canvas>

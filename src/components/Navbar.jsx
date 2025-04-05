@@ -4,12 +4,40 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiMenu, FiX, FiMoon, FiSun } from 'react-icons/fi';
+import { useTheme } from 'next-themes';
+import Image from 'next/image';
+import { FiMenu, FiX, FiMoon, FiSun, FiUser, FiMessageSquare, FiLogIn, FiSettings, FiLogOut, FiEdit, FiHelpCircle } from 'react-icons/fi';
+
+// Animation pour l'apparition/disparition de la navbar
+const navVariants = {
+  hidden: {
+    y: -100,
+    opacity: 0
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+      when: "beforeChildren",
+      staggerChildren: 0.1
+    }
+  },
+  exit: {
+    y: -100,
+    opacity: 0,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut"
+    }
+  }
+};
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   const pathname = usePathname();
 
   // Pages du site
@@ -22,34 +50,54 @@ export default function Navbar() {
     { name: 'Contact', path: '/contact' },
   ];
 
+  // Nouveaux onglets ajoutés
+  const userItems = [
+    { name: 'Connexion', path: '/auth', icon: <FiLogIn className="mr-1" /> },
+    { name: 'Profil', path: '/profile/1', icon: <FiUser className="mr-1" /> },
+    { name: 'Messages', path: '/messaging', icon: <FiMessageSquare className="mr-1" /> },
+    { name: 'Admin', path: '/admin/dashboard', icon: <FiSettings className="mr-1" /> },
+  ];
+
   useEffect(() => {
     setMounted(true);
-    const darkModePref = localStorage.getItem('darkMode') === 'true';
-    setIsDarkMode(darkModePref);
-    if (darkModePref) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   }, []);
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    localStorage.setItem('darkMode', (!isDarkMode).toString());
-    document.documentElement.classList.toggle('dark');
+  // Gérer le changement de thème
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  // Évite les problèmes d'hydratation
   if (!mounted) {
     return null;
   }
 
+  const isDarkMode = theme === 'dark';
+
   return (
-    <nav className="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm">
+    <motion.nav 
+      className="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg border-b border-gray-200 dark:border-gray-800 h-16"
+      variants={navVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/">
-              <span className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">
+            <Link href="/" className="flex items-center">
+              <div className="relative h-8 w-8 mr-2">
+                <Image 
+                  src="/images/webifyLogo1.png" 
+                  alt="WEBIFY Logo" 
+                  fill 
+                  className="object-contain"
+                  onError={(e) => {
+                    e.target.src = "https://via.placeholder.com/32";
+                  }}
+                />
+              </div>
+              <span className="font-bold text-xl text-gray-900 dark:text-white">
                 WEBIFY
               </span>
             </Link>
@@ -57,20 +105,20 @@ export default function Navbar() {
           
           {/* Menu pour desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            <ul className="flex space-x-4">
+            <ul className="flex space-x-2">
               {navItems.map((item) => (
                 <li key={item.path}>
                   <Link href={item.path}>
-                    <span className={`px-3 py-2 rounded-md text-sm font-medium transition-colors relative ${
+                    <span className={`px-2 py-2 rounded-md text-sm font-medium transition-colors relative ${
                       pathname === item.path 
-                        ? 'text-blue-600 dark:text-blue-400' 
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                        ? 'text-primary-600 dark:text-primary-400' 
+                        : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
                     }`}>
                       {item.name}
                       {pathname === item.path && (
                         <motion.span 
                           layoutId="underline"
-                          className="absolute left-0 bottom-0 w-full h-0.5 bg-blue-600 dark:bg-blue-400"
+                          className="absolute left-0 bottom-0 w-full h-0.5 bg-primary-600 dark:bg-primary-400"
                         />
                       )}
                     </span>
@@ -79,48 +127,65 @@ export default function Navbar() {
               ))}
             </ul>
             
-            <button 
-              onClick={toggleDarkMode}
-              className="ml-4 p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none transition-colors"
-              aria-label={isDarkMode ? "Activer le mode clair" : "Activer le mode sombre"}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={isDarkMode ? "dark" : "light"}
-                  initial={{ y: -10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 10, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+            <div className="h-6 border-l border-gray-300 dark:border-gray-700 mx-2"></div>
+            
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-md bg-gray-100 dark:bg-gray-800 focus:outline-none text-gray-700 dark:text-gray-300"
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <FiSun className="h-5 w-5" />
+                ) : (
+                  <FiMoon className="h-5 w-5" />
+                )}
+              </button>
+              
+              <div className="relative group">
+                <button 
+                  className="p-2 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
                 >
-                  {isDarkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
-                </motion.div>
-              </AnimatePresence>
-            </button>
+                  <FiUser className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+                </button>
+                
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                  {userItems.map((item) => (
+                    <Link 
+                      key={item.path}
+                      href={item.path}
+                    >
+                      <span className={`flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                        pathname === item.path || pathname.startsWith(item.path + '/')
+                          ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-400' 
+                          : ''
+                      }`}>
+                        {item.icon} {item.name}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
           
-          {/* Menu pour mobile */}
-          <div className="flex md:hidden items-center">
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none transition-colors mr-2"
-              aria-label={isDarkMode ? "Activer le mode clair" : "Activer le mode sombre"}
-            >
-              {isDarkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
-            </button>
-            
+          {/* Bouton menu mobile */}
+          <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none transition-colors"
-              aria-expanded={isMenuOpen}
-              aria-label="Menu principal"
+              className="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none"
             >
-              {isMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
+              {isMenuOpen ? (
+                <FiX className="h-6 w-6" />
+              ) : (
+                <FiMenu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
       </div>
       
-      {/* Menu mobile déroulant */}
+      {/* Menu mobile */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -139,10 +204,28 @@ export default function Navbar() {
                 >
                   <span className={`block px-3 py-2 rounded-md text-base font-medium ${
                     pathname === item.path 
-                      ? 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/30' 
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      ? 'text-primary-600 bg-gray-50 dark:text-primary-400 dark:bg-gray-800/50' 
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/30'
                   }`}>
                     {item.name}
+                  </span>
+                </Link>
+              ))}
+              
+              <div className="border-t border-gray-200 dark:border-gray-700 my-2"></div>
+              
+              {userItems.map((item) => (
+                <Link 
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${
+                    pathname === item.path || pathname.startsWith(item.path + '/') 
+                      ? 'text-primary-600 bg-gray-50 dark:text-primary-400 dark:bg-gray-800/50' 
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/30'
+                  }`}>
+                    {item.icon} {item.name}
                   </span>
                 </Link>
               ))}
@@ -150,6 +233,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 } 
