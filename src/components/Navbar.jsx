@@ -36,6 +36,7 @@ const navVariants = {
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
@@ -60,7 +61,19 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    // Fermer le menu account lorsqu'on clique ailleurs sur la page
+    const handleClickOutside = (event) => {
+      if (isAccountMenuOpen && !event.target.closest('.account-menu-container')) {
+        setIsAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isAccountMenuOpen]);
 
   // Gérer le changement de thème
   const toggleTheme = () => {
@@ -142,35 +155,52 @@ export default function Navbar() {
                 )}
               </button>
               
-              <div className="relative group">
+              <div className="relative account-menu-container">
                 <button 
                   className="p-2 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+                  onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                  aria-expanded={isAccountMenuOpen}
                 >
                   <FiUser className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                 </button>
                 
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
-                  {userItems.map((item) => (
-                    <Link 
-                      key={item.path}
-                      href={item.path}
-                    >
-                      <span className={`flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                        pathname === item.path || pathname.startsWith(item.path + '/')
-                          ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-400' 
-                          : ''
-                      }`}>
-                        {item.icon} {item.name}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
+                {isAccountMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 z-50">
+                    {userItems.map((item) => (
+                      <Link 
+                        key={item.path}
+                        href={item.path}
+                        onClick={() => setIsAccountMenuOpen(false)}
+                      >
+                        <span className={`flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                          pathname === item.path || pathname.startsWith(item.path + '/')
+                            ? 'bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-400' 
+                            : ''
+                        }`}>
+                          {item.icon} {item.name}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
           
           {/* Bouton menu mobile */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center space-x-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none"
+              aria-label="Toggle theme"
+            >
+              {isDarkMode ? (
+                <FiSun className="h-5 w-5" />
+              ) : (
+                <FiMoon className="h-5 w-5" />
+              )}
+            </button>
+            
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 rounded-md text-gray-700 dark:text-gray-300 focus:outline-none"

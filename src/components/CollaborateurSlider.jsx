@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import { FiEdit2, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { useTheme } from 'next-themes';
 
 // Données par défaut des collaborateurs
 const defaultCollaborateurs = [
@@ -74,6 +75,8 @@ export function CollaborateurSlider({ collaborateurs = defaultCollaborateurs, is
   const [sliderWidth, setSliderWidth] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
   const [maxDrag, setMaxDrag] = useState(0);
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
 
   // Nombre de cartes à afficher en fonction de la largeur d'écran
   const [visibleCards, setVisibleCards] = useState(3);
@@ -159,8 +162,8 @@ export function CollaborateurSlider({ collaborateurs = defaultCollaborateurs, is
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          className={`p-2 rounded-full shadow-lg bg-white dark:bg-gray-800 ${
-            currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+          className={`p-2 rounded-full shadow-lg ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} ${
+            currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           aria-label="Précédent"
         >
@@ -172,8 +175,8 @@ export function CollaborateurSlider({ collaborateurs = defaultCollaborateurs, is
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          className={`p-2 rounded-full shadow-lg bg-white dark:bg-gray-800 ${
-            currentIndex >= collaborateurs.length - visibleCards ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+          className={`p-2 rounded-full shadow-lg ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} ${
+            currentIndex >= collaborateurs.length - visibleCards ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           aria-label="Suivant"
         >
@@ -218,7 +221,7 @@ export function CollaborateurSlider({ collaborateurs = defaultCollaborateurs, is
               <motion.div
                 whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
                 transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                className="bg-gray-400 dark:bg-gray-900 rounded-xl dark:border-gray-800 overflow-hidden hover:shadow-xl transition-all duration-300 h-full relative"
+                className={`${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'} rounded-xl ${isDarkMode ? 'border-gray-800' : 'border border-gray-200'} overflow-hidden hover:shadow-xl transition-all duration-300 h-full relative`}
               >
                 {/* Bouton d'édition si éditable */}
                 {isEditable && (

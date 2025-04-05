@@ -21,7 +21,7 @@ const SocialIcon = ({ href, children, label }) => (
 
 export function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 pt-12 pb-8 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-gray-100/80 dark:bg-gray-900/80 backdrop-blur-sm pt-12 pb-8 border-t border-gray-200 dark:border-gray-800 relative z-10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo et tagline */}

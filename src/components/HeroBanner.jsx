@@ -5,12 +5,15 @@ import { motion, useAnimation } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import * as THREE from 'three';
+import { useTheme } from 'next-themes';
 
 export function HeroBanner() {
   const [mounted, setMounted] = useState(false);
   const canvasRef = useRef(null);
   const animationControls = useAnimation();
   const threeSceneRef = useRef(null);
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
   
   useEffect(() => {
     setMounted(true);
@@ -187,7 +190,7 @@ export function HeroBanner() {
   if (!mounted) return null;
 
   return (
-    <div className="relative w-full overflow-hidden bg-gray-900">
+    <div className={`relative w-full overflow-hidden ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
       {/* Canvas Three.js pour l'arrière-plan */}
       <canvas 
         ref={canvasRef} 
@@ -196,11 +199,11 @@ export function HeroBanner() {
       
       {/* Effet de grille pour un look futuriste */}
       <div 
-        className="absolute inset-0 z-0 opacity-5"
+        className={`absolute inset-0 z-0 ${isDarkMode ? 'opacity-5' : 'opacity-10'}`}
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
+            linear-gradient(to right, ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'} 1px, transparent 1px),
+            linear-gradient(to bottom, ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'} 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px'
         }}
@@ -215,45 +218,47 @@ export function HeroBanner() {
             transition={{ duration: 0.7 }}
             className="mb-10"
           >
-            <div className="flex justify-center items-center mb-6">
-              <Image 
-                src="/images/webifyLogo1.png" 
-                alt="Webify Logo" 
-                width={100} 
-                height={100} 
-                className="mr-5 animate-pulse"
-                onError={(e) => {
-                  e.target.src = "https://via.placeholder.com/100";
-                }}
-              />
-              <motion.h1
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-6xl md:text-8xl font-bold text-white font-orbitron tracking-wider"
-              >
-                {Array.from("WEBIFY").map((letter, i) => (
-                  <motion.span
-                    key={i}
-                    variants={letterVariants}
-                    initial="initial"
-                    animate="animate"
-                    style={{ 
-                      display: 'inline-block',
-                      transition: { delay: i * 0.1 }
-                    }}
-                  >
-                    {letter}
-                  </motion.span>
-                ))}
-              </motion.h1>
+            <div className="flex justify-center items-center mb-6 bg-opacity-30 dark:bg-opacity-30 bg-white/10 dark:bg-black/10 py-4 px-6 rounded-xl">
+              <div className="flex flex-row flex-nowrap items-center whitespace-nowrap">
+                <Image 
+                  src="/images/webifyLogo1.png" 
+                  alt="Webify Logo" 
+                  width={80}
+                  height={80}
+                  className="animate-pulse mr-3"
+                  onError={(e) => {
+                    e.target.src = "https://via.placeholder.com/80";
+                  }}
+                />
+                <motion.h1
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className={`text-4xl sm:text-6xl md:text-8xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} font-orbitron tracking-wider whitespace-nowrap`}
+                >
+                  {Array.from("WEBIFY").map((letter, i) => (
+                    <motion.span
+                      key={i}
+                      variants={letterVariants}
+                      initial="initial"
+                      animate="animate"
+                      style={{ 
+                        display: 'inline-block',
+                        transition: { delay: i * 0.1 }
+                      }}
+                    >
+                      {letter}
+                    </motion.span>
+                  ))}
+                </motion.h1>
+              </div>
             </div>
             
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-xl md:text-2xl text-white max-w-3xl mx-auto font-light leading-relaxed py-4"
+              className={`text-xl md:text-2xl ${isDarkMode ? 'text-white' : 'text-gray-800'} max-w-3xl mx-auto font-light leading-relaxed py-4 px-6 backdrop-blur-sm bg-opacity-30 dark:bg-opacity-30 bg-white/10 dark:bg-black/10 rounded-lg`}
             >
               Bienvenue chez WEBIFY, à la fois un portfolio d'un développeur passionné et une startup dédiée 
               à transformer vos idées en expériences numériques exceptionnelles.
@@ -269,7 +274,7 @@ export function HeroBanner() {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary-600/20 via-primary-400/20 to-primary-600/20 blur-xl"></div>
               <motion.h2 
-                className="relative font-orbitron text-4xl md:text-5xl font-bold tracking-widest py-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-primary-400"
+                className="relative font-orbitron text-4xl md:text-5xl font-bold tracking-widest py-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-primary-400 backdrop-blur-sm px-4 rounded-lg bg-white/5 dark:bg-black/5"
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >

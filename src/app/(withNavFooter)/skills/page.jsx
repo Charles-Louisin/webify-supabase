@@ -5,9 +5,10 @@ import { motion, useAnimation, useInView } from 'framer-motion';
 import * as THREE from 'three';
 import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDatabase, FaFigma, FaDocker, FaGitAlt } from 'react-icons/fa';
 import { SiJavascript, SiTypescript, SiNextdotjs, SiTailwindcss, SiMongodb, SiFirebase, SiSupabase, SiAdobexd } from 'react-icons/si';
+import { useTheme } from 'next-themes';
 
 // Composant pour les barres de compétences techniques
-const SkillBar = ({ skill, level, color }) => {
+const SkillBar = ({ skill, level, color, darkMode }) => {
   const barRef = useRef(null);
   const isInView = useInView(barRef, { once: false, amount: 0.3 });
   const controls = useAnimation();
@@ -27,10 +28,10 @@ const SkillBar = ({ skill, level, color }) => {
   return (
     <div className="mb-8" ref={barRef}>
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-medium text-gray-100 font-orbitron">{skill}</h3>
-        <span className="text-sm text-gray-300">{level}%</span>
+        <h3 className={`text-lg font-medium font-orbitron ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>{skill}</h3>
+        <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{level}%</span>
       </div>
-      <div className="h-3 rounded-full bg-gray-800 overflow-hidden relative">
+      <div className={`h-3 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-gray-200'} overflow-hidden relative`}>
         <motion.div
           className={`h-full rounded-full ${color}`}
           initial={{ width: 0 }}
@@ -45,7 +46,7 @@ const SkillBar = ({ skill, level, color }) => {
 };
 
 // Composant pour le diagramme radar des soft skills
-const RadarChart = ({ skills }) => {
+const RadarChart = ({ skills, darkMode }) => {
   const canvasRef = useRef(null);
   const svgRef = useRef(null);
   const isInView = useInView(canvasRef, { once: false, amount: 0.5 });
@@ -70,6 +71,13 @@ const RadarChart = ({ skills }) => {
       svg.removeChild(svg.firstChild);
     }
     
+    // Couleurs adaptatives selon le mode
+    const circleStrokeColor = darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+    const lineStrokeColor = darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+    const textFillColor = darkMode ? 'white' : 'black';
+    const polygonFillColor = 'rgba(236, 72, 153, 0.2)';
+    const polygonStrokeColor = 'rgba(236, 72, 153, 0.8)';
+    
     // Dessiner les cercles de fond
     const circles = [0.2, 0.4, 0.6, 0.8, 1];
     circles.forEach(percentage => {
@@ -78,7 +86,7 @@ const RadarChart = ({ skills }) => {
       circle.setAttribute('cy', centerY);
       circle.setAttribute('r', radius * percentage);
       circle.setAttribute('fill', 'none');
-      circle.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)');
+      circle.setAttribute('stroke', circleStrokeColor);
       circle.setAttribute('stroke-width', '1');
       svg.appendChild(circle);
     });
@@ -97,7 +105,7 @@ const RadarChart = ({ skills }) => {
       line.setAttribute('y1', centerY);
       line.setAttribute('x2', x);
       line.setAttribute('y2', y);
-      line.setAttribute('stroke', 'rgba(255, 255, 255, 0.2)');
+      line.setAttribute('stroke', lineStrokeColor);
       line.setAttribute('stroke-width', '1');
       svg.appendChild(line);
       
@@ -109,7 +117,7 @@ const RadarChart = ({ skills }) => {
       label.setAttribute('y', labelY);
       label.setAttribute('text-anchor', 'middle');
       label.setAttribute('dominant-baseline', 'middle');
-      label.setAttribute('fill', 'white');
+      label.setAttribute('fill', textFillColor);
       label.setAttribute('font-size', '12');
       label.setAttribute('font-family', 'Orbitron, sans-serif');
       label.textContent = skill.name;
@@ -127,8 +135,8 @@ const RadarChart = ({ skills }) => {
     
     const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
     polygon.setAttribute('points', points.join(' '));
-    polygon.setAttribute('fill', 'rgba(236, 72, 153, 0.2)');
-    polygon.setAttribute('stroke', 'rgba(236, 72, 153, 0.8)');
+    polygon.setAttribute('fill', polygonFillColor);
+    polygon.setAttribute('stroke', polygonStrokeColor);
     polygon.setAttribute('stroke-width', '2');
     svg.appendChild(polygon);
     
@@ -147,7 +155,7 @@ const RadarChart = ({ skills }) => {
       svg.appendChild(point);
     });
     
-  }, [mounted, isInView, skills]);
+  }, [mounted, isInView, skills, darkMode]);
   
   return (
     <div ref={canvasRef} className="w-full aspect-square max-w-md mx-auto relative">
@@ -158,9 +166,12 @@ const RadarChart = ({ skills }) => {
 
 // Composant pour les icônes flottantes des technologies
 const FloatingIcons = () => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
+  
   const icons = [
     { Icon: FaReact, color: "#61DAFB", size: 40, delay: 0 },
-    { Icon: SiNextdotjs, color: "#FFFFFF", size: 38, delay: 0.1 },
+    { Icon: SiNextdotjs, color: isDarkMode ? "#FFFFFF" : "#000000", size: 38, delay: 0.1 },
     { Icon: SiJavascript, color: "#F7DF1E", size: 34, delay: 0.2 },
     { Icon: SiTypescript, color: "#3178C6", size: 34, delay: 0.3 },
     { Icon: FaNodeJs, color: "#339933", size: 42, delay: 0.4 },
@@ -221,6 +232,7 @@ export default function Skills() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
   const controls = useAnimation();
+  const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
@@ -258,11 +270,15 @@ export default function Skills() {
         
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         
+        // Couleur des particules selon le thème
+        const isDarkMode = theme === 'dark';
+        const particleColor = isDarkMode ? 0x7dd3fc : 0x0369a1;
+        
         const particlesMaterial = new THREE.PointsMaterial({
           size: 0.02,
-          color: 0x7dd3fc,
+          color: particleColor,
           transparent: true,
-          opacity: 0.4,
+          opacity: isDarkMode ? 0.4 : 0.2,
           blending: THREE.AdditiveBlending
         });
         
@@ -329,11 +345,11 @@ export default function Skills() {
         threeSceneRef.current.cleanup();
       }
     };
-  }, [mounted]);
+  }, [mounted, theme]);
 
   // Données des compétences techniques
   const technicalSkills = [
-    { skill: "React & Next.js", level: 95, color: "bg-blue-500" },
+    { skill: "React & Next.js", level: 90, color: "bg-blue-500" },
     { skill: "JavaScript / TypeScript", level: 90, color: "bg-primary-500" },
     { skill: "HTML5 & CSS3", level: 92, color: "bg-blue-500" },
     { skill: "Node.js & Express", level: 85, color: "bg-primary-500" },
@@ -377,21 +393,23 @@ export default function Skills() {
     }
   };
 
+  const isDarkMode = theme === 'dark';
+
   if (!mounted) return null;
 
   return (
-    <main className="relative bg-gray-950 min-h-screen">
+    <>
       {/* Canvas Three.js pour l'arrière-plan */}
       <canvas 
         ref={canvasRef} 
-        className="fixed inset-0 w-full h-full z-0"
+        className="fixed inset-0 w-full h-screen z-0"
       />
       
       {/* Icônes flottantes */}
       <FloatingIcons />
       
-      <div className="relative z-10 pt-0">
-        <div className="container mx-auto px-4 py-20">
+      <div className={`relative z-10 ${isDarkMode ? 'bg-gray-950/0' : 'bg-gray-50/0'} min-h-screen`}>
+        <div className="container mx-auto px-4 py-20 pt-28">
           {/* En-tête de la page */}
           <motion.div 
             className="text-center mb-20"
@@ -403,7 +421,7 @@ export default function Skills() {
               MES COMPÉTENCES
             </h1>
             <div className="h-1 w-40 bg-gradient-to-r from-blue-500 to-primary-500 mx-auto mb-6"></div>
-            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className={`text-lg md:text-xl ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} max-w-3xl mx-auto`}>
               Je combine expertise technique et compétences transversales pour réaliser des projets web innovants et performants.
             </p>
           </motion.div>
@@ -412,12 +430,12 @@ export default function Skills() {
           <section ref={sectionRef} className="mb-32">
             <motion.div 
               className="max-w-4xl mx-auto"
-              initial="hidden"
+              initial="visible"
               animate={controls}
               variants={containerVariants}
             >
               <motion.div variants={itemVariants} className="mb-12 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-orbitron mb-4">
+                <h2 className={`text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} font-orbitron mb-4`}>
                   Compétences Techniques
                 </h2>
                 <div className="h-0.5 w-20 bg-gradient-to-r from-blue-500 to-primary-500 mx-auto"></div>
@@ -430,7 +448,8 @@ export default function Skills() {
                       <SkillBar 
                         skill={skill.skill} 
                         level={skill.level} 
-                        color={skill.color} 
+                        color={skill.color}
+                        darkMode={isDarkMode}
                       />
                     </motion.div>
                   ))}
@@ -441,7 +460,8 @@ export default function Skills() {
                       <SkillBar 
                         skill={skill.skill} 
                         level={skill.level} 
-                        color={skill.color} 
+                        color={skill.color}
+                        darkMode={isDarkMode}
                       />
                     </motion.div>
                   ))}
@@ -460,17 +480,17 @@ export default function Skills() {
               transition={{ duration: 0.8 }}
             >
               <div className="mb-12 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-orbitron mb-4">
+                <h2 className={`text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} font-orbitron mb-4`}>
                   Soft Skills
                 </h2>
                 <div className="h-0.5 w-20 bg-gradient-to-r from-blue-500 to-primary-500 mx-auto mb-6"></div>
-                <p className="text-gray-300 max-w-2xl mx-auto mb-10">
+                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} max-w-2xl mx-auto mb-10`}>
                   Au-delà des compétences techniques, ces qualités sont essentielles pour collaborer efficacement et mener à bien chaque projet.
                 </p>
               </div>
               
-              <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 shadow-xl">
-                <RadarChart skills={softSkills} />
+              <div className={`${isDarkMode ? 'bg-gray-900/50' : 'bg-white/80'} backdrop-blur-sm rounded-2xl p-6 border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} shadow-xl`}>
+                <RadarChart skills={softSkills} darkMode={isDarkMode} />
               </div>
             </motion.div>
           </section>
@@ -485,11 +505,11 @@ export default function Skills() {
               transition={{ duration: 0.8 }}
             >
               <div className="mb-12 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-orbitron mb-4">
+                <h2 className={`text-3xl md:text-4xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'} font-orbitron mb-4`}>
                   Ma Stack Technologique
                 </h2>
                 <div className="h-0.5 w-20 bg-gradient-to-r from-blue-500 to-primary-500 mx-auto mb-6"></div>
-                <p className="text-gray-300 max-w-2xl mx-auto mb-10">
+                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} max-w-2xl mx-auto mb-10`}>
                   Voici les technologies et outils que j'utilise quotidiennement pour créer des applications web modernes.
                 </p>
               </div>
@@ -497,7 +517,7 @@ export default function Skills() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
                 {[
                   { Icon: FaReact, name: "React", color: "#61DAFB" },
-                  { Icon: SiNextdotjs, name: "Next.js", color: "#FFFFFF" },
+                  { Icon: SiNextdotjs, name: "Next.js", color: isDarkMode ? "#FFFFFF" : "#000000" },
                   { Icon: SiJavascript, name: "JavaScript", color: "#F7DF1E" },
                   { Icon: SiTypescript, name: "TypeScript", color: "#3178C6" },
                   { Icon: FaNodeJs, name: "Node.js", color: "#339933" },
@@ -514,7 +534,7 @@ export default function Skills() {
                 ].map((tech, index) => (
                   <motion.div
                     key={index}
-                    className="bg-gray-900/70 backdrop-blur-sm border border-gray-800 rounded-xl p-4 flex flex-col items-center text-center group"
+                    className={`${isDarkMode ? 'bg-gray-900/70' : 'bg-white/70'} backdrop-blur-sm border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'} rounded-xl p-4 flex flex-col items-center text-center group`}
                     whileHover={{ y: -5, boxShadow: `0 10px 20px -5px rgba(${tech.color}, 0.3)` }}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -522,7 +542,7 @@ export default function Skills() {
                     transition={{ duration: 0.4, delay: index * 0.05 }}
                   >
                     <tech.Icon size={40} color={tech.color} className="mb-3 group-hover:scale-110 transition-transform duration-300" />
-                    <p className="text-gray-300 font-medium">{tech.name}</p>
+                    <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-700'} font-medium`}>{tech.name}</p>
                   </motion.div>
                 ))}
               </div>
@@ -530,6 +550,6 @@ export default function Skills() {
           </section>
         </div>
       </div>
-    </main>
+    </>
   );
 } 
