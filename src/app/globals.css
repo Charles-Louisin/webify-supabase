@@ -103,6 +103,64 @@ main {
   @apply bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400;
 }
 
+/* Style pour les groupes de formulaire */
+.form-group {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.form-group .relative {
+  /* margin-top: 0.5rem; */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Style pour les labels qui flottent au-dessus des inputs */
+.relative label {
+  transition: all 0.2s ease-out;
+  transform-origin: left top;
+  font-size: 0.875rem;
+  font-weight: medium;
+}
+
+.relative:focus-within label {
+  color: rgb(var(--primary-rgb));
+  font-weight: 500;
+}
+
+/* Effet de bordure spéciale pour les inputs avec icônes */
+.input.with-icon {
+  border-color: rgba(14, 165, 233, 0.3);
+  padding-left: 2.5rem; /* Espace pour l'icône */
+}
+
+.dark .input.with-icon {
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+/* Position pour les icônes dans les champs de saisie */
+.relative .absolute {
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Exception pour les boutons qui doivent être cliquables */
+.relative .absolute.pointer-events-auto {
+  pointer-events: auto;
+  z-index: 20;
+}
+
+/* Effet de transition pour les champs de saisie */
+.input::placeholder {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.input:focus::placeholder {
+  opacity: 0.5;
+}
+
 /* Dégradé de couleur pour le fond */
 .bg-gradient-page {
   background: linear-gradient(180deg, #0c4a6e 0%, #0f172a 100%);
@@ -110,4 +168,28 @@ main {
 
 .dark .bg-gradient-page {
   background: linear-gradient(180deg, #0c4a6e 0%, #0f172a 100%);
+}
+
+/* Assurer que les liens et boutons sont cliquables */
+a, button {
+  position: relative;
+  z-index: 20;
+}
+
+/* Assurer que les menus déroulants sont toujours cliquables */
+.account-menu-container {
+  position: relative;
+  z-index: 101;
+}
+
+.account-menu-container > div {
+  pointer-events: auto !important;
+}
+
+/* Override pour les liens dans les menus déroulants */
+.account-menu-container a,
+.account-menu-container button,
+.account-menu-container span {
+  pointer-events: auto !important;
+  cursor: pointer;
 }

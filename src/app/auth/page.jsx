@@ -56,15 +56,17 @@ export default function Auth() {
       <ParticlesBackground className="opacity-80" />
       
       {/* Bouton retour à l'accueil */}
-      <Link href="/">
-        <motion.div
-          className="absolute top-4 left-4 z-50 p-3 rounded-full bg-white/10 backdrop-blur-md text-primary-600 dark:text-primary-400 border border-white/20 shadow-lg"
-          whileHover={{ scale: 1.1, boxShadow: "0 0 15px rgba(59, 130, 246, 0.5)" }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <FiHome className="w-5 h-5" />
-        </motion.div>
-      </Link>
+      <div className="fixed top-4 left-4 z-[100]">
+        <Link href="/" className="block">
+          <motion.div
+            className="p-3 rounded-full bg-white/10 backdrop-blur-md text-primary-600 dark:text-primary-400 border border-white/20 shadow-lg"
+            whileHover={{ scale: 1.1, boxShadow: "0 0 15px rgba(59, 130, 246, 0.5)" }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <FiHome className="w-5 h-5" />
+          </motion.div>
+        </Link>
+      </div>
       
       {/* Cercles décoratifs */}
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -141,73 +143,110 @@ export default function Auth() {
             className="space-y-6"
           >
             {!isLogin && (
-              <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Nom complet
-                </label>
+              <div className="form-group">
                 <div className="relative">
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                    <FiUser className="h-5 w-5" />
+                  <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Nom complet
+                  </label>
+                  <div className="relative w-full">
+                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-500 dark:text-primary-400">
+                      <FiUser className="h-5 w-5 icon" />
+                    </div>
+                    <input
+                      id="name"
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      required
+                      className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 border border-blue-400/30 dark:border-blue-400/20 with-icon"
+                      placeholder="Votre nom complet"
+                    />
                   </div>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    required
-                    className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70"
-                    placeholder="Votre nom complet"
-                  />
                 </div>
               </div>
             )}
             
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email
-              </label>
+            <div className="form-group">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <FiMail className="h-5 w-5" />
+                <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Email
+                </label>
+                <div className="relative w-full">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-500 dark:text-primary-400">
+                    <FiMail className="h-5 w-5 icon" />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 border border-blue-400/30 dark:border-blue-400/20 with-icon"
+                    placeholder="Votre adresse email"
+                  />
                 </div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70"
-                  placeholder="Votre adresse email"
-                />
               </div>
             </div>
             
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Mot de passe
-              </label>
+            <div className="form-group">
               <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <FiLock className="h-5 w-5" />
+                <label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Mot de passe
+                </label>
+                <div className="relative w-full">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-500 dark:text-primary-400">
+                    <FiLock className="h-5 w-5 icon" />
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete={isLogin ? "current-password" : "new-password"}
+                    required
+                    className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 border border-blue-400/30 dark:border-blue-400/20 with-icon"
+                    placeholder={isLogin ? "Votre mot de passe" : "Choisissez un mot de passe"}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10 pointer-events-auto"
+                  >
+                    {showPassword ? <FiEyeOff className="h-5 w-5" /> : <FiEye className="h-5 w-5" />}
+                  </button>
                 </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete={isLogin ? "current-password" : "new-password"}
-                  required
-                  className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70"
-                  placeholder={isLogin ? "Votre mot de passe" : "Choisissez un mot de passe"}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400"
-                >
-                  {showPassword ? <FiEyeOff className="h-5 w-5" /> : <FiEye className="h-5 w-5" />}
-                </button>
               </div>
             </div>
+            
+            {!isLogin && (
+              <div className="form-group">
+                <div className="relative">
+                  <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Confirmez le mot de passe
+                  </label>
+                  <div className="relative w-full">
+                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-500 dark:text-primary-400">
+                      <FiLock className="h-5 w-5 icon" />
+                    </div>
+                    <input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      required
+                      className="input pl-10 w-full backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 border border-blue-400/30 dark:border-blue-400/20 with-icon"
+                      placeholder="Confirmez votre mot de passe"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10 pointer-events-auto"
+                    >
+                      {showPassword ? <FiEyeOff className="h-5 w-5" /> : <FiEye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             
             {isLogin && (
               <div className="flex items-center justify-end">

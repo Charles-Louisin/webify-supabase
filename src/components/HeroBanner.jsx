@@ -12,8 +12,8 @@ export function HeroBanner() {
   const canvasRef = useRef(null);
   const animationControls = useAnimation();
   const threeSceneRef = useRef(null);
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
+  const { theme, resolvedTheme } = useTheme();
+  const isDarkMode = mounted ? (theme === 'dark' || resolvedTheme === 'dark') : false;
   
   useEffect(() => {
     setMounted(true);
@@ -151,6 +151,17 @@ export function HeroBanner() {
     };
   }, []);
   
+  // Effet supplémentaire pour réagir aux changements de thème
+  useEffect(() => {
+    if (mounted) {
+      // Forcer le rendu lors du changement de thème
+      animationControls.start({
+        scale: [1, 1.01, 1],
+        transition: { duration: 0.3 }
+      });
+    }
+  }, [theme, resolvedTheme, mounted, animationControls]);
+  
   // Animation pour la phrase d'accroche
   const taglineVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -165,19 +176,20 @@ export function HeroBanner() {
     }
   };
 
-  const wordVariants = {
+  // Utiliser une fonction pour les variants de mots pour qu'ils soient recalculés à chaque rendu
+  const getWordVariants = (isDark) => ({
     hidden: { opacity: 0, y: 20, textShadow: "0 0 0px rgba(255,255,255,0)" },
     visible: { 
       opacity: 1, 
       y: 0,
-      textShadow: "0 0 15px rgba(255,255,255,0.8)",
-      color: "#ffffff",
+      textShadow: isDark ? "0 0 15px rgba(255,255,255,0.8)" : "0 0 10px rgba(0,0,0,0.2)",
+      color: isDark ? "#ffffff" : "#1e293b",
       transition: {
         duration: 0.8,
         ease: "easeInOut"
       }
     }
-  };
+  });
 
   // Séparer les mots pour l'animation
   const taglineWords = "VOTRE VISION, NOTRE CRÉATION".split(' ');
@@ -267,7 +279,7 @@ export function HeroBanner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className={`text-xl md:text-2xl ${isDarkMode ? 'text-white' : 'text-gray-800'} max-w-3xl mx-auto font-light leading-relaxed py-4 px-6 backdrop-blur-sm bg-opacity-30 dark:bg-opacity-30 bg-white/10 dark:bg-black/10 rounded-lg`}
+              className={`text-xl md:text-2xl ${isDarkMode ? 'text-white' : 'text-gray-900'} max-w-3xl mx-auto font-medium leading-relaxed py-4 px-6 backdrop-blur-sm bg-opacity-30 dark:bg-opacity-30 ${isDarkMode ? 'bg-black/20' : 'bg-white/50'} rounded-lg`}
             >
               Bienvenue chez WEBIFY, à la fois un portfolio d'un développeur passionné et une startup dédiée 
               à transformer vos idées en expériences numériques exceptionnelles.
@@ -283,13 +295,19 @@ export function HeroBanner() {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-primary-600/20 via-primary-400/20 to-primary-600/20 blur-xl"></div>
               <motion.h2 
-                className="relative font-orbitron text-4xl md:text-5xl font-bold tracking-widest py-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-primary-400 backdrop-blur-sm px-4 rounded-lg bg-white/5 dark:bg-black/5"
+                className={`relative font-orbitron text-4xl md:text-5xl font-bold tracking-widest py-6 ${
+                  isDarkMode 
+                    ? "text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-white to-primary-400 bg-white/5 dark:bg-black/5" 
+                    : "text-slate-800 bg-white/50"
+                } backdrop-blur-sm px-4 rounded-lg`}
                 initial={{ filter: "brightness(0.5)" }}
                 animate={{ 
-                  filter: ["brightness(0.5)", "brightness(0.7)", "brightness(1.2)", "brightness(1)"],
+                  filter: isDarkMode 
+                    ? ["brightness(0.5)", "brightness(0.7)", "brightness(1.2)", "brightness(1)"] 
+                    : ["brightness(0.7)", "brightness(1)"],
                   transition: {
                     duration: 2,
-                    times: [0, 0.3, 0.6, 1],
+                    times: isDarkMode ? [0, 0.3, 0.6, 1] : [0, 1],
                     ease: "easeInOut",
                     delay: 1.5
                   }
@@ -298,7 +316,9 @@ export function HeroBanner() {
                 {taglineWords.map((word, i) => (
                   <motion.span
                     key={i}
-                    variants={wordVariants}
+                    initial="hidden"
+                    animate="visible"
+                    variants={getWordVariants(isDarkMode)}
                     className="inline-block mx-2 backdrop-blur-sm"
                   >
                     {word}

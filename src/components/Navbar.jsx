@@ -165,12 +165,13 @@ export default function Navbar() {
                 </button>
                 
                 {isAccountMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg py-1 z-[100] pointer-events-auto">
                     {userItems.map((item) => (
                       <Link 
                         key={item.path}
                         href={item.path}
                         onClick={() => setIsAccountMenuOpen(false)}
+                        className="block pointer-events-auto"
                       >
                         <span className={`flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
                           pathname === item.path || pathname.startsWith(item.path + '/')
